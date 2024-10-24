@@ -8,12 +8,14 @@ const load = document.querySelector('#load-pokemon');
 const prev = document.querySelector('#previous-pokemon');
 const next = document.querySelector('#next-pokemon');
 const screens = document.querySelectorAll('.off');
-const containerImg = document.querySelector('#pokemon-info .img-container'); 
+const containerImg = document.querySelector('#pokemon-info .img-container');
+const favoriteButton = document.querySelector('#favorite'); 
 
 //Cada boton va a gatillar una funcionalidad diferente al escuchar el evento de click
 load.addEventListener('click', loadPokemon);
 prev.addEventListener('click', showPreviousPokemon);
 next.addEventListener('click', showNextPokemon);
+favoriteButton.addEventListener('click', toggleFavorite);
 
 function loadPokemon() {
     //Modifica clases de los elementos para alterar los estilos aplicados
@@ -62,6 +64,14 @@ function displayPokemon(index) {
     document.querySelector('#pokemon-name').textContent = capitalizeFirstLetter(pokemon.name);
     document.querySelector('#pokemon-type').textContent = `Tipo: ${pokemon.type}`;
 
+    // Verificar si el pokemon está en favoritos
+    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    const isFavorite = favorites.some(fav => fav.name === pokemon.name);
+    if (isFavorite) {
+        favoriteButton.classList.add('fav');  // Agrega la clase si es favorito
+    } else {
+        favoriteButton.classList.remove('fav');  // Quita la clase si no es favorito
+    }
     //Hacemos otro fetch para obtener la descripcion del pokemon en español
     fetch(pokemon.speciesUrl)
         .then(response => response.json())
@@ -90,6 +100,25 @@ function showNextPokemon() {
     } else {
         currentIndex = 0;
         displayPokemon(currentIndex);
+    }
+}
+
+//Guarda favoritos en local storage
+function toggleFavorite() {
+    const pokemon = pokedex[currentIndex];
+    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
+    if (favorites.some(fav => fav.name === pokemon.name)) {
+        // Si ya está en favoritos se elimina del storage
+        favoriteButton.classList.remove("fav");
+        const updatedFavorites = favorites.filter(fav => fav.name !== pokemon.name);
+        localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+    
+    } else {
+        // Si no está en favoritos lo agregamos
+        favoriteButton.classList.add("fav");
+        favorites.push(pokemon);
+        localStorage.setItem('favorites', JSON.stringify(favorites));
     }
 }
 

@@ -52,6 +52,10 @@ body {
     border-color: #333;
 }
 
+.pokedex-screen.off #favorite {
+    display: none;
+}
+
 #pokemon-info {
     display: flex;
     flex-direction: column;
@@ -74,6 +78,19 @@ body {
     font-size: 16px;
     color: #333;
     font-weight: 700;
+}
+
+#favorite {
+    position: relative;
+    top: -50px;
+    left: 125px;
+    cursor: pointer;
+}
+
+#favorite.fav svg,
+#favorite:hover svg {
+    color: #dc3545;
+    transition: color 0.4s ease-in-out;
 }
 
 .pokedex-buttons {
